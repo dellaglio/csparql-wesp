@@ -14,7 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.streamreasoning.wsp.csparql.mqtt.MQTTObserver;
+import org.streamreasoning.wsp.csparql.out.mqtt.MQTTObserver;
 
 import static org.junit.Assert.*;
 

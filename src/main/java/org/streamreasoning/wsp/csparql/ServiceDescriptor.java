@@ -2,12 +2,12 @@ package org.streamreasoning.wsp.csparql;
 
 import java.io.IOException;
 
-import org.streamreasoning.wsp.csparql.mqtt.MQTTBroker;
+import org.streamreasoning.wsp.csparql.out.mqtt.MQTTBroker;
 
 import eu.larkc.csparql.core.engine.CsparqlEngine;
 import eu.larkc.csparql.core.streams.formats.CSparqlQuery;
 import fi.iki.elonen.NanoHTTPD;
-import fi.iki.elonen.NanoHTTPD.Response.IStatus;
+
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class ServiceDescriptor extends NanoHTTPD {
@@ -31,11 +31,27 @@ public class ServiceDescriptor extends NanoHTTPD {
 
 	@Override
 	public Response serve(IHTTPSession session) {
-		//		ret.setConHeader("Content-Type", "application/json");
-		//		ret.addHeader("Link", "<http://json-ld.org/contexts/person.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"");
 		String uri = session.getUri();
 		System.out.println(uri);
 		Response ret;
+		if(uri.equals("/")){
+			String msg = 
+					"{"
+						+ "\"@context\":{"
+							+ "\"rsd\":\"http://example.org/RdfStreamDescriptor#\","
+							+ "\"generatedAt\":{"
+								+ "\"@id\":\"http://www.w3.org/ns/prov#generatedAtTime\","
+								+ "\"@type\":\"http://www.w3.org/2001/XMLSchema#dateTime\""
+							+ "}"
+						+ "},"
+						+ "\"@id\":\"someurl\","
+						+ "\"@type\":\"rsd:CSPARQLEngine\","
+						+ "\"sld:lastUpdated\":\"2016-11-29T16:20:10.061+0000\""
+					+ "}";
+			ret = newFixedLengthResponse(msg);
+			ret.setMimeType("application/json");
+			return ret;
+		}
 		if(uri.startsWith("/stream/")){
 			String id = uri.substring("/stream/".length());
 			CSparqlQuery query = null;
@@ -44,9 +60,29 @@ public class ServiceDescriptor extends NanoHTTPD {
 					query = q;
 			}
 			if(query!=null){
-				String msg = "{\"@context\":{\"sld\":\"http://streamreasoning.org/ontologies/SLD4TripleWave#\",\"generatedAt\":{\"@id\":\"http://www.w3.org/ns/prov#generatedAtTime\",\"@type\":\"http://www.w3.org/2001/XMLSchema#dateTime\"}},\"@id\":\"tr:sGraph\",\"sld:streamLocation\":\""+MQTTBroker.INSTANCE.getAddress()+"\",\"sld:streamTopic\":\""+id+"\",\"sld:tBoxLocation\":{\"@id\":\"http://purl.oclc.org/NET/ssnx/ssn\"},\"sld:lastUpdated\":\"2016-11-29T16:20:10.061+0000\"}";
+				String msg = 
+						"{"
+							+ "\"@context\":{"
+								+ "\"rsd\":\"http://example.org/RdfStreamDescriptor#\","
+								+ "\"generatedAt\":{"
+									+ "\"@id\":\"http://www.w3.org/ns/prov#generatedAtTime\","
+									+ "\"@type\":\"http://www.w3.org/2001/XMLSchema#dateTime\""
+								+ "}"
+							+ "},"
+							+ "\"@id\":\"someurl\","
+							+ "\"@type\":\"rsd:RDFStream\","
+							+ "\"dcat:distribution\":{"
+								+ "\"@id\":\""+MQTTBroker.INSTANCE.getAddress()+"\","
+								+ "\"rsd:protocol\":\"mqtt\","
+								+ "\"dcat:accessURL\":\""+MQTTBroker.INSTANCE.getAddress()+"\","
+								+ "\"rsd:mqttTopic\":\""+id+"\""
+							+ "},"
+							+ "\"rsd:streamTemplate\":{"
+								+ "\"@id\":\"http://purl.oclc.org/NET/ssnx/ssn\""
+							+ "},"
+							+ "\"sld:lastUpdated\":\"2016-11-29T16:20:10.061+0000\""
+						+ "}";
 				ret = newFixedLengthResponse(msg);
-				//		Response ret = new NanoHTTPD.Response(Response.Status.OK, "application/json", );
 				ret.setMimeType("application/json");
 				return ret;
 			}

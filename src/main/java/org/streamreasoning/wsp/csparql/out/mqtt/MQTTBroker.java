@@ -1,4 +1,4 @@
-package org.streamreasoning.wsp.csparql.mqtt;
+package org.streamreasoning.wsp.csparql.out.mqtt;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;

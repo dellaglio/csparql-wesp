@@ -1,4 +1,4 @@
-package org.streamreasoning.wsp.csparql.mqtt;
+package org.streamreasoning.wsp.csparql.out.mqtt;
 
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -9,7 +9,6 @@ import java.util.Observable;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 
-import com.hp.hpl.jena.datatypes.xsd.impl.XSDDateTimeType;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;

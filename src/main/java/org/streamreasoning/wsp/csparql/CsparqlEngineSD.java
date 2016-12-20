@@ -2,7 +2,7 @@ package org.streamreasoning.wsp.csparql;
 
 import java.text.ParseException;
 
-import org.streamreasoning.wsp.csparql.mqtt.MQTTObserver;
+import org.streamreasoning.wsp.csparql.out.mqtt.MQTTObserver;
 
 import eu.larkc.csparql.common.utils.ReasonerChainingType;
 import eu.larkc.csparql.core.engine.CsparqlEngineImpl;
