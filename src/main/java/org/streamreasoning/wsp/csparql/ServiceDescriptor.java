@@ -49,7 +49,7 @@ public class ServiceDescriptor extends NanoHTTPD {
 						+ "\"sld:lastUpdated\":\"2016-11-29T16:20:10.061+0000\""
 					+ "}";
 			ret = newFixedLengthResponse(msg);
-			ret.setMimeType("application/json");
+			ret.setMimeType("application/ld+json");
 			return ret;
 		}
 		if(uri.startsWith("/stream/")){
@@ -83,7 +83,7 @@ public class ServiceDescriptor extends NanoHTTPD {
 							+ "\"sld:lastUpdated\":\"2016-11-29T16:20:10.061+0000\""
 						+ "}";
 				ret = newFixedLengthResponse(msg);
-				ret.setMimeType("application/json");
+				ret.setMimeType("application/ld+json");
 				return ret;
 			}
 		}

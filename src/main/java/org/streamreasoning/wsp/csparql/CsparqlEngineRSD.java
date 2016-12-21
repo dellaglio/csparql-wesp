@@ -8,8 +8,8 @@ import eu.larkc.csparql.common.utils.ReasonerChainingType;
 import eu.larkc.csparql.core.engine.CsparqlEngineImpl;
 import eu.larkc.csparql.core.engine.CsparqlQueryResultProxy;
 
-public class CsparqlEngineSD extends CsparqlEngineImpl{
-	public CsparqlEngineSD() {
+public class CsparqlEngineRSD extends CsparqlEngineImpl{
+	public CsparqlEngineRSD() {
 		super();
 		new ServiceDescriptor(this);
 	}

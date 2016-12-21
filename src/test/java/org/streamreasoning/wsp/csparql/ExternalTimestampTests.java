@@ -173,7 +173,7 @@ public class ExternalTimestampTests {
 //		c1.addObserver(new MQTTObserver("ciao"));
 //		streamGenerator.run();
 
-		CsparqlEngine engine = new CsparqlEngineSD();
+		CsparqlEngine engine = new CsparqlEngineRSD();
 		engine.initialize();
 
 		TestGeneratorFromInput streamGenerator = new TestGeneratorFromInput("http://myexample.org/stream", 
