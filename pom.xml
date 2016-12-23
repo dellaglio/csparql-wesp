@@ -10,13 +10,13 @@
 			<artifactId>csparql-core</artifactId>
 			<version>0.9.7</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.fusesource.mqtt-client</groupId> <artifactId>mqtt-client</artifactId> 
-			<version>1.12</version> </dependency> -->
+		<!-- 
 		<dependency>
 			<groupId>org.nanohttpd</groupId>
 			<artifactId>nanohttpd</artifactId>
 			<version>2.2.0</version>
 		</dependency>
+		 -->
 		<dependency>
 			<groupId>org.eclipse.paho</groupId>
 			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
@@ -28,26 +28,15 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.glassfish.tyrus/tyrus-client -->
-		<!-- <dependency> <groupId>org.glassfish.tyrus</groupId> <artifactId>tyrus-client</artifactId> 
-			<version>1.13</version> </dependency> -->
-
-		<dependency>
-			<groupId>org.glassfish.tyrus</groupId>
-			<artifactId>tyrus-server</artifactId>
-			<version>1.13</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.glassfish.tyrus</groupId>
-			<artifactId>tyrus-container-grizzly-server</artifactId>
-			<version>1.13</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty.websocket/websocket-client -->
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-client</artifactId>
+			<version>9.4.0.RC3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
 			<version>9.4.0.RC3</version>
 		</dependency>
 

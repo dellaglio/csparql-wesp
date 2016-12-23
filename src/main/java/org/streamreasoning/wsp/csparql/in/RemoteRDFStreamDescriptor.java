@@ -14,6 +14,8 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 
+import eu.larkc.csparql.cep.api.RdfStream;
+
 public class RemoteRDFStreamDescriptor {
 	public static void main1(String[] args) {
 		System.out.println(DatatypeConverter.parseDateTime("2016-12-21T15:41:54.356+01:00").getTimeInMillis());
@@ -21,7 +23,9 @@ public class RemoteRDFStreamDescriptor {
 
 	public static void main(String[] args) {
 		//		RemoteRDFStreamDescriptor c = new RemoteRDFStreamDescriptor("http://131.175.141.249/TripleWave-transform/sgraph");
-		RemoteRDFStreamDescriptor c = new RemoteRDFStreamDescriptor("http://localhost:8114/tw");
+		String iri = "http://localhost:8114/tw";
+		RemoteRDFStreamDescriptor c = new RemoteRDFStreamDescriptor(iri);
+		Injecter injecter = new Injecter(new RdfStream(iri));
 		if(c.hasEndpoint("ws")){
 			System.out.println("== WS ==");
 			for(String uri : c.retrieveRDFStreamDescriptor("ws")){
