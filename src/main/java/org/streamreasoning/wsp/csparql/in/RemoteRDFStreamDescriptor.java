@@ -21,24 +21,6 @@ public class RemoteRDFStreamDescriptor {
 		System.out.println(DatatypeConverter.parseDateTime("2016-12-21T15:41:54.356+01:00").getTimeInMillis());
 	}
 
-	public static void main(String[] args) {
-		//		RemoteRDFStreamDescriptor c = new RemoteRDFStreamDescriptor("http://131.175.141.249/TripleWave-transform/sgraph");
-		String iri = "http://localhost:8114/tw";
-		RemoteRDFStreamDescriptor c = new RemoteRDFStreamDescriptor(iri);
-		Injecter injecter = new Injecter(new RdfStream(iri));
-		if(c.hasEndpoint("ws")){
-			System.out.println("== WS ==");
-			for(String uri : c.retrieveRDFStreamDescriptor("ws")){
-				new WebSocketConnector(uri, null);
-			}
-		} if(!c.hasEndpoint("mqtt")){
-			System.out.println("== MQTT ==");
-			for(String uri : c.retrieveRDFStreamDescriptor("mqtt")){
-				new MQTTConnector(uri.replace("mqtt", "tcp"), "twave", null);
-			}
-		}
-	}
-
 	private Model m;
 
 	public RemoteRDFStreamDescriptor(String uri) {
@@ -73,4 +55,23 @@ public class RemoteRDFStreamDescriptor {
 
 		return QueryExecutionFactory.create(q, m).execAsk();
 	}
+
+	public static void main(String[] args) {
+		//		RemoteRDFStreamDescriptor c = new RemoteRDFStreamDescriptor("http://131.175.141.249/TripleWave-transform/sgraph");
+		String iri = "http://localhost:8114/tw";
+		RemoteRDFStreamDescriptor c = new RemoteRDFStreamDescriptor(iri);
+		Injecter injecter = new Injecter(new RdfStream(iri));
+		if(c.hasEndpoint("ws")){
+			System.out.println("== WS ==");
+			for(String uri : c.retrieveRDFStreamDescriptor("ws")){
+				new WebSocketConnector(uri, injecter);
+			}
+		} if(!c.hasEndpoint("mqtt")){
+			System.out.println("== MQTT ==");
+			for(String uri : c.retrieveRDFStreamDescriptor("mqtt")){
+				new MQTTConnector(uri.replace("mqtt", "tcp"), "twave", null);
+			}
+		}
+	}
+
 }

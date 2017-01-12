@@ -10,19 +10,22 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.streamreasoning.wsp.csparql.out.mqtt.MQTTBroker;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.websocket.api.SuspendToken;
+import org.streamreasoning.wsp.csparql.config.Config;
 
 import eu.larkc.csparql.core.engine.CsparqlEngine;
 import eu.larkc.csparql.core.streams.formats.CSparqlQuery;
 
 public class ServiceDescriptor {
 	private CsparqlEngine engine;
+	private Server server;
+	private HandlerCollection chc;
 
-	public ServiceDescriptor(CsparqlEngine engine){
-		this.engine = engine;
+	public ServiceDescriptor(CsparqlEngine e){
+		this.engine = e;
 
-		Server server = new Server(8080);
+		server = new Server(Config.INSTANCE.getServerPort());
 		
 		ContextHandler mainContext = new ContextHandler("/");
 		mainContext.setResourceBase(".");
@@ -59,6 +62,8 @@ public class ServiceDescriptor {
 			
 			@Override
 			public void handle(String target, Request baseRequest, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, ServletException {
+				System.out.println(engine.getAllQueries());
+				System.out.println(engine.getClass());
 				String id = httpRequest.getPathInfo().substring(1);
 				CSparqlQuery query = null;
 				for(CSparqlQuery q : engine.getAllQueries()){
@@ -68,49 +73,70 @@ public class ServiceDescriptor {
 				if(query!=null){
 					httpResponse.setContentType("application/ld+json");
 					baseRequest.setHandled(true);
-					httpResponse.getWriter().println("{"
+					String desc = 
+							"{"
 								+ "\"@context\":{"
-									+ "\"rsd\":\"http://example.org/RdfStreamDescriptor#\","
-									+ "\"generatedAt\":{"
-										+ "\"@id\":\"http://www.w3.org/ns/prov#generatedAtTime\","
-										+ "\"@type\":\"http://www.w3.org/2001/XMLSchema#dateTime\""
-									+ "}"
-								+ "},"
-								+ "\"@id\":\"someurl\","
-								+ "\"@type\":\"rsd:RDFStream\","
-								+ "\"dcat:distribution\":{"
-									+ "\"@id\":\""+MQTTBroker.INSTANCE.getAddress()+"\","
-									+ "\"rsd:protocol\":\"mqtt\","
-									+ "\"dcat:accessURL\":\""+MQTTBroker.INSTANCE.getAddress()+"\","
-									+ "\"rsd:mqttTopic\":\""+id+"\""
-								+ "},"
-								+ "\"rsd:streamTemplate\":{"
-									+ "\"@id\":\"http://purl.oclc.org/NET/ssnx/ssn\""
-								+ "},"
-								+ "\"sld:lastUpdated\":\"2016-11-29T16:20:10.061+0000\""
-							+ "}");
+								+ "\"rsd\":\"http://example.org/RdfStreamDescriptor#\","
+								+ "\"generatedAt\":{"
+									+ "\"@id\":\"http://www.w3.org/ns/prov#generatedAtTime\","
+									+ "\"@type\":\"http://www.w3.org/2001/XMLSchema#dateTime\""
+								+ "}"
+							+ "},"
+							+ "\"@id\":\"someurl\","
+							+ "\"@type\":\"rsd:RDFStream\","
+							+ "\"dcat:distribution\":[";
+					if(Config.INSTANCE.isMQTTEnabled()){
+						desc += "{"
+								+ "\"@id\":\""+Config.INSTANCE.getMQTTBrokerUrl()+"\","
+								+ "\"rsd:protocol\":\"mqtt\","
+								+ "\"dcat:accessURL\":\""+Config.INSTANCE.getMQTTBrokerUrl()+"\","
+								+ "\"rsd:mqttTopic\":\""+id+"\""
+							+ "}";
+						if(Config.INSTANCE.isWSEnabled()) desc += ",";
+					}
+					if(Config.INSTANCE.isWSEnabled())
+						desc += "{"
+								+ "\"@id\":\""+Config.INSTANCE.getServerUrl()+"/ws/"+id+"\","
+								+ "\"rsd:protocol\":\"ws\","
+								+ "\"dcat:accessURL\":\""+Config.INSTANCE.getServerUrl()+"/ws/"+id+"\""
+							+ "}";
+					desc += "],"
+							+ "\"rsd:streamTemplate\":{"
+								+ "\"@id\":\"http://purl.oclc.org/NET/ssnx/ssn\""
+							+ "},"
+							+ "\"sld:lastUpdated\":\"2016-11-29T16:20:10.061+0000\""
+						+ "}";
+					httpResponse.getWriter().println(desc);
 				}
 			}
 
 		});
 		
-		ContextHandlerCollection chc = new ContextHandlerCollection();
+//		HandlerCollection 
+		chc = new HandlerCollection(true);
+//		ContextHandlerCollection chc = new ContextHandlerCollection();
 		chc.addHandler(mainContext);
 		chc.addHandler(queryContext);
 		
 		server.setHandler(chc);
-
+		
 		try {
 			server.start();
-			server.join();
-		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("C");
+//			server.join();
+			System.out.println("D");
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 
 		System.out.println("\nRunning! Point your browsers to http://localhost:8080/ \n");
 	}
 
+	public HandlerCollection getHandlerCollection(){
+		return chc;
+	}
+	
 	public static void main(String[] args) {
-		new ServiceDescriptor(null);
 	}
 }

@@ -6,6 +6,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.streamreasoning.wsp.csparql.config.Config;
 
 public class MQTTBroker {
 	public static final MQTTBroker INSTANCE = new MQTTBroker();
@@ -15,7 +16,7 @@ public class MQTTBroker {
 	
 	private MQTTBroker(){
 		System.out.println("init class");
-		brokerUrl = "tcp://localhost:1883";
+		brokerUrl = Config.INSTANCE.getMQTTBrokerUrl();
 		MemoryPersistence pers = new MemoryPersistence();
 		try {
 			broker = new MqttClient(brokerUrl, "csparql", pers);
